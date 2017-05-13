@@ -5,6 +5,8 @@ import Game from './partials/Game'
 const game = new Game('game', 512, 256);
 
 (function gameLoop() {
-    game.render();
+    if (!game.paused){
+        game.render();
+    }
     requestAnimationFrame(gameLoop);
 })();
