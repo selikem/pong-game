@@ -1,4 +1,4 @@
-import { SVG_NS, ballColor } from '../settings.js';
+import { SVG_NS, ballColor, AUDIO } from '../settings.js';
 
 export default class Ball {
   constructor(radius, boardWidth, boardHeight) {
@@ -6,21 +6,78 @@ export default class Ball {
     this.boardWidth = boardWidth;
     this.boardHeight = boardHeight;
     this.direction = 1;
-    this.x = this.boardWidth/2;
-    this.y = this.boardHeight/2;
-    this.vy = Math.floor(Math.random() * 10 - 5); 
+    this.reset();
+  }
+
+  reset () {
+    this.x = this.boardWidth / 2;
+    this.y = this.boardHeight / 2;
+
+    this.vy = 0;
+
+    while (this.vy === 0) {
+      this.vy = Math.floor(Math.random() * 10 - 5);
+    }
+
     this.vx = this.direction * (6 - Math.abs(this.vy));
   }
 
   wallCollision() {
     const hitTop = this.y-this.radius <= 0;
     const hitBottom = this.y+this.radius >= this.boardHeight;
-    const hitLeft = this.x-this.radius <= 0;
-    const hitRight = this.x+this.radius >= this.boardWidth;
-    if (hitLeft || hitRight){ 
-      this.vx = -this.vx;
-    } else if (hitTop || hitBottom) {
+    if (hitTop || hitBottom) {
       this.vy = -this.vy;
+    }
+  }
+
+   paddleCollision(paddle1, paddle2) {
+
+    if (this.vx > 0) {
+
+      let paddle = paddle2.coordinates(paddle2.x, paddle2.y, paddle2.width, paddle2.height);
+      let [leftX, rightX, topY, bottomY] = paddle;
+
+      if (
+        this.x + this.radius >= leftX
+        && this.x + this.radius <= rightX
+        && this.y >= topY
+        && this.y <= bottomY
+
+      ) {
+        this.vx = -this.vx;
+        AUDIO.ping.play();
+      }
+
+    } else {
+
+      let paddle = paddle1.coordinates(paddle1.x, paddle1.y, paddle1.width, paddle1.height);
+      let [leftX, rightX, topY, bottomY] = paddle;
+
+      if (
+        this.x - this.radius <= rightX
+        && this.x - this.radius >= leftX
+        && this.y >= topY
+        && this.y <= bottomY
+
+      ) {
+        this.vx = -this.vx;
+        AUDIO.ping.play();
+      }
+    }
+  }
+
+  goal(paddle) {
+    paddle.score++;
+    let rightPaddle = (paddle.x > 493)
+    let leftPaddle = (paddle.x < 493)
+    if ((rightPaddle) && (paddle.score === 11)) {
+      alert('Right paddle wins!');
+      document.location.reload();
+    } else if ((leftPaddle) && (paddle.score === 11)) {
+      alert('Left paddle wins!');
+      document.location.reload();
+    } else {
+      this.reset();
     }
   }
 
@@ -30,11 +87,21 @@ export default class Ball {
     this.x += this.vx;
     this.y += this.vy;
     this.wallCollision();
+    this.paddleCollision(player1, player2);
     let circle = document.createElementNS(SVG_NS, 'circle');
     circle.setAttributeNS(null, 'r', this.radius);
     circle.setAttributeNS(null, 'cx', this.x);
     circle.setAttributeNS(null, 'cy', this.y);
     circle.setAttributeNS(null, 'fill', ballColor);
     svg.appendChild(circle);
+    const rightGoal = this.x + this.radius >= this.boardWidth;
+    const leftGoal = this.x - this.radius <= 0;
+    if (rightGoal) {
+      this.goal(player1);
+      this.direction = 1;
+    } else if (leftGoal) {
+      this.goal(player2);
+      this.direction = -1;
+    }
   }
 }

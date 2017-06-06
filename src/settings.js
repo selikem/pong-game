@@ -14,3 +14,11 @@ export const KEYS = {
   p2Down: 'ArrowDown',  
   pause: ' '
 }
+export const SCORE = {
+  distance: 60,
+  topDistance: 30,
+  size: 30
+}
+export const AUDIO = {
+  ping: new Audio('public/sounds/pong-03.wav')
+}
