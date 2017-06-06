@@ -99,9 +99,11 @@ export default class Ball {
     const leftGoal = this.x - this.radius <= 0;
     if (rightGoal) {
       this.goal(player1);
+      player2.height += 5;
       this.direction = 1;
     } else if (leftGoal) {
       this.goal(player2);
+      player1.height +=5;
       this.direction = -1;
     }
   }
