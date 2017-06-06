@@ -27,6 +27,7 @@ export default class Ball {
     const hitBottom = this.y+this.radius >= this.boardHeight;
     if (hitTop || hitBottom) {
       this.vy = -this.vy;
+      AUDIO.ping.play();
     }
   }
 
