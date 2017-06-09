@@ -2,7 +2,7 @@ import { SVG_NS, paddleHeight, paddleWidth, paddleGap, ballRadius, KEYS, SCORE }
 import Board from './Board.js'
 import Paddle from './Paddle.js'
 import Ball from './Ball.js'
-import Score from './Score'
+import Score from './Score.js'
 
 export default class Game {
 
@@ -37,6 +37,13 @@ export default class Game {
 		this.ball.render(svg, this.player1, this.player2);
 		this.player1score.render(svg, this.player1.score);
 		this.player2score.render(svg, this.player2.score);
+    if (this.player1.score === 11) {
+      alert('Player 1 wins!!');
+      document.location.reload();
+    } else if (this.player2.score === 11) {
+      alert('Player 2 wins!!');
+      document.location.reload();
+    } 
 	}
 
 }

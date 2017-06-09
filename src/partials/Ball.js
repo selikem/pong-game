@@ -67,19 +67,9 @@ export default class Ball {
     }
   }
 
-  goal(paddle) {
-    paddle.score++;
-    let rightPaddle = (paddle.x > 493)
-    let leftPaddle = (paddle.x < 493)
-    if ((rightPaddle) && (paddle.score === 11)) {
-      alert('Right paddle wins!');
-      document.location.reload();
-    } else if ((leftPaddle) && (paddle.score === 11)) {
-      alert('Left paddle wins!');
-      document.location.reload();
-    } else {
-      this.reset();
-    }
+  goal(player) {
+    player.score++;
+    this.reset();
   }
 
   
